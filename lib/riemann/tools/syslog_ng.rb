@@ -21,10 +21,6 @@ module Riemann
       opt :queued_warning, 'Queued messages warning threshold', short: :none, default: 300
       opt :queued_critical, 'Queued messages critical threshold', short: :none, default: 1000
 
-      def self.process_stdin
-        new.process_stdin
-      end
-
       def initialize
         @socket = UNIXSocket.new(opts[:socket])
       end
