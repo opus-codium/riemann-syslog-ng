@@ -93,6 +93,49 @@ RSpec.describe Riemann::Tools::SyslogNg do
       end
     end
 
+    context 'with metrics above threshold' do
+      let(:statistics) do
+        <<~STATISTICS
+          dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;queued;204
+          dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;dropped;0
+          dst.riemann;d_riemann#1;riemann,riemann.example.com,5555;a;queued;404
+          dst.riemann;d_riemann#1;riemann,riemann.example.com,5555;a;dropped;1
+          dst.riemann;d_riemann#2;riemann,riemann.example.com,5555;a;queued;4040
+          dst.riemann;d_riemann#2;riemann,riemann.example.com,5555;a;dropped;1000
+          .
+        STATISTICS
+      end
+
+      before do
+        allow(tool).to receive(:report)
+        tool.tick
+      end
+
+      it 'report correct state with few queued events' do
+        expect(tool).to have_received(:report).with({ metric: 204, service: 'dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;queued', state: 'ok' })
+      end
+
+      it 'report correct state with some queued events' do
+        expect(tool).to have_received(:report).with({ metric: 404, service: 'dst.riemann;d_riemann#1;riemann,riemann.example.com,5555;a;queued', state: 'warning' })
+      end
+
+      it 'report correct state with a lot of queued events' do
+        expect(tool).to have_received(:report).with({ metric: 4040, service: 'dst.riemann;d_riemann#2;riemann,riemann.example.com,5555;a;queued', state: 'critical' })
+      end
+
+      it 'report correct state with no dropped events' do
+        expect(tool).to have_received(:report).with({ metric: 0, service: 'dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;dropped', state: 'ok' })
+      end
+
+      it 'report correct state with some dropped events' do
+        expect(tool).to have_received(:report).with({ metric: 1, service: 'dst.riemann;d_riemann#1;riemann,riemann.example.com,5555;a;dropped', state: 'critical' })
+      end
+
+      it 'report correct state with a lot of dropped events' do
+        expect(tool).to have_received(:report).with({ metric: 1000, service: 'dst.riemann;d_riemann#2;riemann,riemann.example.com,5555;a;dropped', state: 'critical' })
+      end
+    end
+
     context 'with custom formatting' do
       before do
         ARGV.replace(['--format', '%<source_name>s %<type>s'])

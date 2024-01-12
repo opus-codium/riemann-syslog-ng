@@ -21,8 +21,12 @@ module Riemann
       opt :queued_warning, 'Queued messages warning threshold', short: :none, default: 300
       opt :queued_critical, 'Queued messages critical threshold', short: :none, default: 1000
 
-      def initialize
-        @socket = UNIXSocket.new(opts[:socket])
+      def socket
+        @socket ||= UNIXSocket.new(opts[:socket])
+      end
+
+      def force_reconnect
+        @socket = nil
       end
 
       def tick
@@ -33,14 +37,17 @@ module Riemann
                    state: statistic_state(statistic[:type], statistic[:metric]),
                  })
         end
+      rescue Errno::EPIPE
+        force_reconnect
+        retry
       end
 
       def statistics
         res = []
 
-        @socket.puts 'STATS CSV'
-        @socket.gets # discard header
-        while (line = @socket.gets.chomp) != '.'
+        socket.puts 'STATS CSV'
+        socket.gets # discard header
+        while (line = socket.gets.chomp) != '.'
           source_name, source_id, source_instance, state, type, metric = line.split(';')
 
           next if rejected_source_name?(source_name)
