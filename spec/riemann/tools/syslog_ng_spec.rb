@@ -3,7 +3,7 @@
 require "riemann/tools/syslog_ng"
 
 RSpec.describe Riemann::Tools::SyslogNg do
-  subject(:tool) { described_class.new }
+  let(:tool) { described_class.new }
 
   let(:statistics) do
     <<~STATISTICS
