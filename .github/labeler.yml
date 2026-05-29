@@ -1,0 +1,14 @@
+---
+# Managed by modulesync - DO NOT EDIT
+# See: https://github.com/opus-codium/modulesync_riemann
+
+backwards-incompatible:
+ - head-branch: ['^change-', '^remove-']
+bug:
+ - head-branch: ['^fix-']
+enhancement:
+ - head-branch: ['^add-', '^allow-', '^set-']
+modulesync:
+ - head-branch: ['^modulesync$']
+skip-changelog:
+ - head-branch: ['^release-', '^release$']

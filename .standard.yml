@@ -1,7 +1,5 @@
 # Managed by modulesync - DO NOT EDIT
 # See: https://github.com/opus-codium/modulesync_riemann
 
-/Gemfile.lock
-/coverage/
-/pkg/
-/spec/examples.txt
+plugins:
+  - standard-rspec

@@ -1,9 +1,16 @@
+# Managed by modulesync - DO NOT EDIT
+# See: https://github.com/opus-codium/modulesync_riemann
+
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
-  - package-ecosystem: github-actions
+  # Open PR for gem updates
+  - package-ecosystem: "bundler"
     directory: "/"
     schedule:
-      interval: daily
-      time: "13:00"
-    open-pull-requests-limit: 10
+      interval: "daily"
+
+  # Open PR for GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
