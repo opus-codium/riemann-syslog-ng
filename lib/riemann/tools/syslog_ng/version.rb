@@ -3,7 +3,7 @@
 module Riemann
   module Tools # :nodoc:
     class SyslogNg
-      VERSION = '2.0.0'
+      VERSION = "2.0.0"
     end
   end
 end
