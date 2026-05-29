@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.0.0](https://github.com/opus-codium/riemann-syslog-ng/tree/v2.0.0) (2026-05-29)
+
+[Full Changelog](https://github.com/opus-codium/riemann-syslog-ng/compare/v1.0.1...v2.0.0)
+
+**Breaking changes:**
+
+- Drop Ruby 2.6; Allow riemann-tools 2.0.0 [\#13](https://github.com/opus-codium/riemann-syslog-ng/pull/13) ([smortex](https://github.com/smortex))
+
 ## [v1.0.1](https://github.com/opus-codium/riemann-syslog-ng/tree/v1.0.1) (2024-01-12)
 
 [Full Changelog](https://github.com/opus-codium/riemann-syslog-ng/compare/v1.0.0...v1.0.1)
