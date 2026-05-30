@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'riemann/tools/syslog_ng'
+require "riemann/tools/syslog_ng"
 
 RSpec.describe Riemann::Tools::SyslogNg do
-  subject(:tool) { described_class.new }
+  let(:tool) { described_class.new }
 
   let(:statistics) do
     <<~STATISTICS
@@ -19,81 +19,81 @@ RSpec.describe Riemann::Tools::SyslogNg do
   before do
     socket = double
     allow(socket).to receive(:gets).and_return(*(["SourceName;SourceId;SourceInstance;State;Type;Number\n"] + statistics.lines))
-    allow(socket).to receive(:puts).with('STATS CSV')
+    allow(socket).to receive(:puts).with("STATS CSV")
 
     allow(UNIXSocket).to receive(:new).and_return(socket)
   end
 
-  describe '#tick' do
-    context 'with default config' do
-      it 'reports all metrics' do
+  describe "#tick" do
+    context "with default config" do
+      it "reports all metrics" do
         allow(tool).to receive(:report)
         tool.tick
         expect(tool).to have_received(:report).exactly(5).times
       end
     end
 
-    context 'with SourceName filtering' do
+    context "with SourceName filtering" do
       before do
-        ARGV.replace(['--source-name', 'dst.riemann'])
+        ARGV.replace(["--source-name", "dst.riemann"])
       end
 
-      it 'reports metrics with the correct SourceName' do
+      it "reports metrics with the correct SourceName" do
         allow(tool).to receive(:report)
         tool.tick
         expect(tool).to have_received(:report).once
       end
     end
 
-    context 'with SourceId filtering' do
+    context "with SourceId filtering" do
       before do
-        ARGV.replace(['--source-id', 'internal_source'])
+        ARGV.replace(["--source-id", "internal_source"])
       end
 
-      it 'reports metrics with the correct SourceId' do
+      it "reports metrics with the correct SourceId" do
         allow(tool).to receive(:report)
         tool.tick
         expect(tool).to have_received(:report).once
       end
     end
 
-    context 'with SourceInstance filtering' do
+    context "with SourceInstance filtering" do
       before do
-        ARGV.replace(['--source-instance', 'journal'])
+        ARGV.replace(["--source-instance", "journal"])
       end
 
-      it 'reports metrics with the correct SourceInstance' do
+      it "reports metrics with the correct SourceInstance" do
         allow(tool).to receive(:report)
         tool.tick
         expect(tool).to have_received(:report).once
       end
     end
 
-    context 'with State filtering' do
+    context "with State filtering" do
       before do
-        ARGV.replace(['--state', 'fake'])
+        ARGV.replace(["--state", "fake"])
       end
 
-      it 'reports metrics with the correct State' do
+      it "reports metrics with the correct State" do
         allow(tool).to receive(:report)
         tool.tick
         expect(tool).to have_received(:report).exactly(1).times
       end
     end
 
-    context 'with Type filtering' do
+    context "with Type filtering" do
       before do
-        ARGV.replace(['--type', 'dropped'])
+        ARGV.replace(["--type", "dropped"])
       end
 
-      it 'reports metrics with the correct Type' do
+      it "reports metrics with the correct Type" do
         allow(tool).to receive(:report)
         tool.tick
         expect(tool).to have_received(:report).exactly(1).times
       end
     end
 
-    context 'with metrics above threshold' do
+    context "with metrics above threshold" do
       let(:statistics) do
         <<~STATISTICS
           dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;queued;204
@@ -111,34 +111,34 @@ RSpec.describe Riemann::Tools::SyslogNg do
         tool.tick
       end
 
-      it 'report correct state with few queued events' do
-        expect(tool).to have_received(:report).with({ metric: 204, service: 'dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;queued', state: 'ok' })
+      it "report correct state with few queued events" do
+        expect(tool).to have_received(:report).with({metric: 204, service: "dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;queued", state: "ok"})
       end
 
-      it 'report correct state with some queued events' do
-        expect(tool).to have_received(:report).with({ metric: 404, service: 'dst.riemann;d_riemann#1;riemann,riemann.example.com,5555;a;queued', state: 'warning' })
+      it "report correct state with some queued events" do
+        expect(tool).to have_received(:report).with({metric: 404, service: "dst.riemann;d_riemann#1;riemann,riemann.example.com,5555;a;queued", state: "warning"})
       end
 
-      it 'report correct state with a lot of queued events' do
-        expect(tool).to have_received(:report).with({ metric: 4040, service: 'dst.riemann;d_riemann#2;riemann,riemann.example.com,5555;a;queued', state: 'critical' })
+      it "report correct state with a lot of queued events" do
+        expect(tool).to have_received(:report).with({metric: 4040, service: "dst.riemann;d_riemann#2;riemann,riemann.example.com,5555;a;queued", state: "critical"})
       end
 
-      it 'report correct state with no dropped events' do
-        expect(tool).to have_received(:report).with({ metric: 0, service: 'dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;dropped', state: 'ok' })
+      it "report correct state with no dropped events" do
+        expect(tool).to have_received(:report).with({metric: 0, service: "dst.riemann;d_riemann#0;riemann,riemann.example.com,5555;a;dropped", state: "ok"})
       end
 
-      it 'report correct state with some dropped events' do
-        expect(tool).to have_received(:report).with({ metric: 1, service: 'dst.riemann;d_riemann#1;riemann,riemann.example.com,5555;a;dropped', state: 'critical' })
+      it "report correct state with some dropped events" do
+        expect(tool).to have_received(:report).with({metric: 1, service: "dst.riemann;d_riemann#1;riemann,riemann.example.com,5555;a;dropped", state: "critical"})
       end
 
-      it 'report correct state with a lot of dropped events' do
-        expect(tool).to have_received(:report).with({ metric: 1000, service: 'dst.riemann;d_riemann#2;riemann,riemann.example.com,5555;a;dropped', state: 'critical' })
+      it "report correct state with a lot of dropped events" do
+        expect(tool).to have_received(:report).with({metric: 1000, service: "dst.riemann;d_riemann#2;riemann,riemann.example.com,5555;a;dropped", state: "critical"})
       end
     end
 
-    context 'with custom formatting' do
+    context "with custom formatting" do
       before do
-        ARGV.replace(['--format', '%<source_name>s %<type>s'])
+        ARGV.replace(["--format", "%<source_name>s %<type>s"])
       end
 
       let(:statistics) do
@@ -148,10 +148,10 @@ RSpec.describe Riemann::Tools::SyslogNg do
         STATISTICS
       end
 
-      it 'reports the correct service' do
+      it "reports the correct service" do
         allow(tool).to receive(:report)
         tool.tick
-        expect(tool).to have_received(:report).with({ metric: 204, service: 'dst.riemann queued', state: 'ok' })
+        expect(tool).to have_received(:report).with({metric: 204, service: "dst.riemann queued", state: "ok"})
       end
     end
   end

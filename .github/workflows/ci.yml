@@ -1,4 +1,7 @@
 ---
+# Managed by modulesync - DO NOT EDIT
+# See: https://github.com/opus-codium/modulesync_riemann
+
 name: CI
 
 on:
@@ -10,20 +13,20 @@ on:
       - main
 
 jobs:
-  rubocop:
+  standard:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Setup ruby
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.0
           bundler-cache: true
       - name: Run static code analysis
-        run: bundle exec rubocop
+        run: bundle exec standardrb
   unit:
     runs-on: ubuntu-latest
-    needs: rubocop
+    needs: standard
     strategy:
       matrix:
         ruby:
@@ -36,7 +39,7 @@ jobs:
     name: Ruby ${{ matrix.ruby }}
     steps:
       - uses: actions/checkout@v6
-      - name: Setup ruby
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}

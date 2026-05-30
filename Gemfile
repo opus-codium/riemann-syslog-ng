@@ -1,14 +1,15 @@
+# Managed by modulesync - DO NOT EDIT
+# See: https://github.com/opus-codium/modulesync_riemann
+
 # frozen_string_literal: true
 
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-# Specify your gem's dependencies in riemann-tools.gemspec
 gemspec
 
-gem 'github_changelog_generator'
-gem 'rake'
-gem 'rspec'
-gem 'rubocop'
-gem 'rubocop-rake'
-gem 'rubocop-rspec'
-gem 'simplecov'
+gem "github_changelog_generator"
+gem "rake"
+gem "rspec", "~> 3.0"
+gem "simplecov"
+gem "standard", "~> 1.36"
+gem "standard-rspec"
