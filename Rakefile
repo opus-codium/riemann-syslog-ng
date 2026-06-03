@@ -17,7 +17,7 @@ require "github_changelog_generator/task"
 GitHubChangelogGenerator::RakeTask.new :changelog do |config|
   config.user = "opus-codium"
   config.project = "riemann-syslog-ng"
-  config.exclude_labels = ["dependencies", "skip-changelog"]
-  config.future_release = Riemann::Tools::SyslogNg::VERSION
+  config.exclude_labels = ["github_actions", "modulesync", "skip-changelog"]
+  config.future_release = "v#{Riemann::Tools::SyslogNg::VERSION}"
   config.since_tag = "v1.0.0"
 end
